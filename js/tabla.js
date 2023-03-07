@@ -4,7 +4,8 @@ let btnDeleteLast=document.getElementById("delete").addEventListener("click", bo
 let btnAdd3=document.getElementById("add3").addEventListener("click", enviarTripleDato);
 let btnSinPaginar=document.getElementById("sinpaginar").addEventListener("click", obtenerDatos);
 let btnPaginar=document.getElementById("paginar").addEventListener("click", obtenerDatosPaginados);
-let btnDesc=document.getElementById("desc").addEventListener("click", obtenerDatosDesc);
+let btnDesc=document.getElementById("desc").addEventListener("click", obtenerDatosDescOAsc);
+let btnAsc=document.getElementById("asc").addEventListener("click", obtenerDatosDescOAsc);
 
 
 let tbody=document.querySelector("#tBody");
@@ -27,6 +28,8 @@ let ZooTable={
     
 }
 obtenerDatos();
+
+//////////////////////////////////////////////////////////////////////////
 
 async function obtenerDatosPaginados() {
     let url = new URL('https://63228695a624bced307997db.mockapi.io/api/Zoo');
@@ -71,13 +74,36 @@ async function obtenerDatosPaginados() {
         console.log(error);
     }
 }  
-async function obtenerDatosDesc() {
-    let url = new URL('https://63228695a624bced307997db.mockapi.io/api/Zoo');
-    
-    url.searchParams.append('sortBy', 'id');
-    url.searchParams.append('order', 'desc');
-    tbody.innerHTML=""; 
 
+//////////////////////////////////////////////////////////////////////////
+
+let countAscDesc=0;
+async function obtenerDatosDescOAsc() {
+    let hiddeBtnAsc=document.getElementById("asc");
+    let hiddeBtnDesc=document.getElementById("desc");
+    tbody.innerHTML="";
+    let url = new URL('https://63228695a624bced307997db.mockapi.io/api/Zoo');  
+   
+        if((countAscDesc%2)===0){
+           
+            url.searchParams.append('sortBy', 'id');
+            url.searchParams.delete('order','asc')
+            url.searchParams.append('order', 'desc');
+            hiddeBtnAsc.style.display="inline-block";
+            hiddeBtnDesc.style.display="none";
+            countAscDesc++
+        }
+        
+        else if((countAscDesc%2)!==0){
+            url.searchParams.append('sortBy', 'id');
+            url.searchParams.delete('order','desc')
+            url.searchParams.append('order', 'asc')
+            hiddeBtnDesc.style.display="inline-block";
+            hiddeBtnAsc.style.display="none";
+            countAscDesc++
+        }
+    
+    
     try {
         let res = await fetch(url,{
             method: 'GET',
@@ -115,9 +141,11 @@ async function obtenerDatosDesc() {
     }
 }  
 
+//////////////////////////////////////////////////////////////////////////
+
 async function obtenerDatos() {
     let url = 'https://63228695a624bced307997db.mockapi.io/api/Zoo';
-    
+    tbody.innerHTML="";
     try {
         let res = await fetch(url); // GET url
         let json = await res.json(); // texto json a objeto
@@ -144,6 +172,8 @@ async function obtenerDatos() {
     }
     
 }
+
+//////////////////////////////////////////////////////////////////////////
 
 async function borrarFila() {
 
@@ -172,6 +202,9 @@ async function borrarFila() {
     }
 
 }
+
+//////////////////////////////////////////////////////////////////////////
+
 async function borrarUltimaFila() {
 
     try {
@@ -200,6 +233,9 @@ async function borrarUltimaFila() {
     }
 
 }
+
+//////////////////////////////////////////////////////////////////////////
+
 async function editarFila(){
     let names=document.querySelector("#Nombre").value;
     let category=document.querySelector("#Categoria").value;
@@ -221,6 +257,8 @@ async function editarFila(){
     }
 
 }
+
+//////////////////////////////////////////////////////////////////////////
 
 async function enviarDato(e) {
     let names=document.querySelector("#Nombre").value;
@@ -261,7 +299,7 @@ async function enviarDato(e) {
     
 }
 
-
+//////////////////////////////////////////////////////////////////////////
 
 function enviarTripleDato(){
     
@@ -280,3 +318,6 @@ function enviarTripleDato(){
 
 }
 };
+
+//////////////////////////////////////////////////////////////////////////
+
